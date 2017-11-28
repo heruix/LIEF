@@ -416,7 +416,8 @@ void init_ELF_Binary_class(py::module& m) {
     .def("get_dynamic_symbol",
         static_cast<no_const_func<Symbol&, const std::string&>>(&Binary::get_dynamic_symbol),
         "Get the dynamic symbol from the given name",
-        "symbol_name"_a)
+        "symbol_name"_a,
+        py::return_value_policy::reference)
 
     .def("has_static_symbol",
         &Binary::has_static_symbol,
@@ -426,22 +427,30 @@ void init_ELF_Binary_class(py::module& m) {
     .def("get_static_symbol",
         static_cast<no_const_func<Symbol&, const std::string&>>(&Binary::get_static_symbol),
         "Get the **dynamic** symbol from the given ``name``",
-        "symbol_name"_a)
+        "symbol_name"_a,
+        py::return_value_policy::reference)
+
 
     .def("add_exported_function",
         &Binary::add_exported_function,
         "Create a symbol for the function at the given ``address`` and export it",
-        "address"_a, "name"_a = "")
+        "address"_a, "name"_a = "",
+        py::return_value_policy::reference)
+
 
     .def("export_symbol",
         static_cast<Symbol& (Binary::*)(const Symbol&)>(&Binary::export_symbol),
         "Export the given symbol and create it if it doesn't exist",
-        "symbol"_a)
+        "symbol"_a,
+        py::return_value_policy::reference)
+
 
     .def("export_symbol",
         static_cast<Symbol& (Binary::*)(const std::string&, uint64_t)>(&Binary::export_symbol),
         "Export the symbol with the given name and create it if it doesn't exist",
-        "symbol_name"_a, "value"_a = 0)
+        "symbol_name"_a, "value"_a = 0,
+        py::return_value_policy::reference)
+
 
 
     .def(py::self += Segment())

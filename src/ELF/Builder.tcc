@@ -1889,8 +1889,10 @@ void Builder::build_symbol_version(void) {
   std::vector<uint8_t> sv_raw;
   sv_raw.reserve(this->binary_->symbol_version_table_.size() * sizeof(uint16_t));
 
-  for (const SymbolVersion* sv : this->binary_->symbol_version_table_) {
-    const uint16_t value = sv->value();
+  //for (const SymbolVersion* sv : this->binary_->symbol_version_table_) {
+  for (const Symbol* symbol : this->binary_->dynamic_symbols_) {
+    const SymbolVersion& sv = symbol->symbol_version();
+    const uint16_t value = sv.value();
     sv_raw.insert(
         std::end(sv_raw),
         reinterpret_cast<const uint8_t*>(&value),

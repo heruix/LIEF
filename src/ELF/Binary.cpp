@@ -392,7 +392,7 @@ Symbol& Binary::export_symbol(const Symbol& symbol) {
 
   if (it_symbol == std::end(this->dynamic_symbols_)) {
     // Create a new one
-    Symbol& new_sym = this->add_dynamic_symbol(symbol, SymbolVersion::global());
+    Symbol& new_sym = this->add_dynamic_symbol(symbol, SymbolVersion::local());
     return this->export_symbol(new_sym);
   }
 
@@ -1386,8 +1386,12 @@ Symbol& Binary::add_static_symbol(const Symbol& symbol) {
 
 
 Symbol& Binary::add_dynamic_symbol(const Symbol& symbol, const SymbolVersion& version) {
-  this->dynamic_symbols_.push_back(new Symbol{symbol});
-  this->symbol_version_table_.push_back(new SymbolVersion{version});
+  Symbol* sym = new Symbol{symbol};
+  SymbolVersion* symver = new SymbolVersion{version};
+  sym->symbol_version_ = symver;
+
+  this->dynamic_symbols_.push_back(sym);
+  this->symbol_version_table_.push_back(symver);
   return *(this->dynamic_symbols_.back());
 }
 
