@@ -19,7 +19,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <functional>
-#include <unordered_map>
+#include <map>
 
 #include "LIEF/exception.hpp"
 #include "LIEF/utils.hpp"
@@ -177,7 +177,7 @@ size_t Builder::note_offset(const Note& note) {
 
 
 void Builder::build(NOTE_TYPES type) {
-  using note_to_section_map_t = std::unordered_multimap<NOTE_TYPES, const char*>;
+  using note_to_section_map_t = std::multimap<NOTE_TYPES, const char*>;
   using value_t = typename note_to_section_map_t::value_type;
 
   static const note_to_section_map_t note_to_section_map = {
