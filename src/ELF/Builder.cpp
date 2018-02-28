@@ -159,8 +159,8 @@ size_t Builder::note_offset(const Note& note) {
   auto&& it_note = std::find_if(
       std::begin(this->binary_->notes_),
       std::end(this->binary_->notes_),
-      [&note] (const Note& n) {
-        return n == note;
+      [&note] (const Note* n) {
+        return *n == note;
       });
   if (it_note == std::end(this->binary_->notes_)) {
     // TODO
@@ -169,15 +169,16 @@ size_t Builder::note_offset(const Note& note) {
   size_t offset = std::accumulate(
       std::begin(this->binary_->notes_),
       it_note, 0,
-      [] (size_t offset, const Note& n) {
-        return offset + n.size();
+      [] (size_t offset, const Note* n) {
+        return offset + n->size();
       });
   return offset;
 }
 
 
 void Builder::build(NOTE_TYPES type) {
-  using note_to_section_map_t = std::unordered_multimap<NOTE_TYPES, std::string>;
+  using note_to_section_map_t = std::unordered_multimap<NOTE_TYPES, const char*>;
+  using value_t = typename note_to_section_map_t::value_type;
 
   static const note_to_section_map_t note_to_section_map = {
     { NOTE_TYPES::NT_GNU_ABI_TAG,      ".note.ABI-tag"          },
@@ -193,7 +194,7 @@ void Builder::build(NOTE_TYPES type) {
 
   auto&& it_section_name = std::find_if(
       range_secname.first, range_secname.second,
-      [this] (const note_to_section_map_t::value_type& p) {
+      [this] (value_t p) {
         return this->binary_->has_section(p.second);
       });
 
